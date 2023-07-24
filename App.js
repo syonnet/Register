@@ -1,19 +1,38 @@
-import { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ImageBackground, Alert, Animated } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-
+import { FontAwesome } from '@expo/vector-icons';
 
 export default function App() {
-
   const [termsChecked, setTermsChecked] = useState(false);
+  const rotateValue = new Animated.Value(0);
 
   const handleRegister = () => {
     if (!termsChecked) {
-      Alert.alert('Error','Debes aceptar los términos y condiciones para registrarte.');
+      Alert.alert('Heyyy !! ', 'Debes aceptar los términos y condiciones para registrarte.');
     } else {
-      Alert.alert('Registro Exitoso', '¡Te has registrado correctamente!');
+      Alert.alert('Logro Completado !!', '¡Humano, te has registrado correctamente!');
     }
   };
+
+  const startRotationAnimation = () => {
+    Animated.loop(
+      Animated.timing(rotateValue, {
+        toValue: 1,
+        duration: 3000, 
+        useNativeDriver: true,
+      })
+    ).start();
+  };
+
+  useEffect(() => {
+    startRotationAnimation();
+  }, []);
+
+  const rotateInterpolate = rotateValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'],
+  });
 
   return (
     <View style={styles.container}>
@@ -23,7 +42,9 @@ export default function App() {
         resizeMode="cover"
       >
         <View style={styles.iconContainer}>
-          <Ionicons name="logo-xbox" size={80} color="black" />
+          <Animated.View style={{ transform: [{ rotate: rotateInterpolate }] }}>
+            <Ionicons name="logo-xbox" size={80} color="black" />
+          </Animated.View>
           <Text style={styles.title}>Registro</Text>
         </View>
         <View style={styles.contentContainer}>
@@ -66,11 +87,25 @@ export default function App() {
             </TouchableOpacity>
             <Text style={styles.checkboxLabel}>Acepto los términos y condiciones</Text>
           </View>
+          <View style={styles.divider} />
+          <Text style={styles.socialText}>o regístrate usando :</Text>
+        
+          <View style={styles.socialIconContainer}>
+            <TouchableOpacity style={styles.socialIcon}>
+              <FontAwesome name="facebook" size={24} color="#f50000" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.socialIcon}>
+              <FontAwesome name="twitter" size={24} color="#87ff5c" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.socialIcon}>
+              <FontAwesome name="google" size={24} color="#f7ff5c" />
+            </TouchableOpacity>
+          </View>
         </View>
       </ImageBackground>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -80,8 +115,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    
-    
   },
   iconContainer: {
     alignItems: 'center',
@@ -107,7 +140,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 40,
     borderColor: 'hsla(59, 100%, 0%, 0.51)',
-    borderWidth: 1,
+    borderWidth: 3,
     borderRadius: 5,
     paddingHorizontal: 10,
     marginBottom: 10,
@@ -143,4 +176,29 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginLeft: 5,
   },
+  socialIconContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 1,
+  },
+  socialIcon: {
+    backgroundColor: '#000000',
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 25,
+    marginHorizontal: 10,
+  },
+  socialText: {
+    marginBottom: 10,
+    textAlign: 'center'
+  },
+  divider: {
+    borderBottomColor: '#0a0101',
+    borderBottomWidth: 2,
+    marginVertical: 5,
+    marginHorizontal: 20
+  }
 });
